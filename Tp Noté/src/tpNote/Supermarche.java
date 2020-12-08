@@ -24,8 +24,8 @@ public class Supermarche {
 		super();
 		
 		this.nbCaisses = nbCaisses;
-		this.fileGLobale = null;
-		this.listeCaisses = new ArrayList<Caisse>(20);
+		this.fileGLobale = new ConcurrentLinkedQueue<>();
+		this.listeCaisses = new ArrayList<Caisse>(nbCaisses);
 	}
 	
 	/**
@@ -50,7 +50,56 @@ public class Supermarche {
 	 */
 	public void affecterCaisse(Client client) {
 		
+		// Indique si le client a été affecté ou non
+		boolean clientAffecte = false;
+		int i = 0;
 		
+		while (!clientAffecte) {
+			
+			/* Si on n'a pas affecté le client dans les caisses précédentes
+			 *et qu'on arrive à la dernière, on l'affecte dans cette caise
+			 */
+			if (i == this.listeCaisses.get(i).fileClients.size()) {
+				
+				this.listeCaisses.get(i).fileClients.add(client);
+				
+				/* Ajout du temps de traitement du caddie de ce client au
+				 * temps de traitement de la caisse
+				 */
+				if (this.listeCaisses.get(i).caissiereExperimentee) {
+					this.listeCaisses.get(i).dureeTraitementCaisse += client.dureeTraitementCaddie / 2;
+				} else {
+					this.listeCaisses.get(i).dureeTraitementCaisse += client.dureeTraitementCaddie;
+				}
+				
+				clientAffecte = true;
+			} else {
+			
+				/* Ajout client dans la file de la caisse si aucun client dans la
+				 * file de cette caisse ou si même nombre de clients dans la file
+				 * de cette caisse et dans la suivante.
+				 */
+				if (this.listeCaisses.get(i).fileClients.isEmpty()
+						|| this.listeCaisses.get(i).fileClients.size() <= this.listeCaisses.get(i+1).fileClients.size()) {
+					
+					this.listeCaisses.get(i).fileClients.add(client);
+					
+					/* Ajout du temps de traitement du caddie de ce client au
+					 * temps de traitement de la caisse
+					 */
+					if (this.listeCaisses.get(i).caissiereExperimentee) {
+						this.listeCaisses.get(i).dureeTraitementCaisse += client.dureeTraitementCaddie / 2;
+					} else {
+						this.listeCaisses.get(i).dureeTraitementCaisse += client.dureeTraitementCaddie;
+					}
+					
+					clientAffecte = true;
+				}
+			}
+			
+			// On incrémente i -> on passe à la caisse suivante
+			i++;
+		}
 	}
 	
 	/**
@@ -59,14 +108,6 @@ public class Supermarche {
 	public void ajouterClient(Client clientAAjouter) {
 		
 		this.fileGLobale.add(clientAAjouter);
-	}
-	
-	/**
-	 * Supprimer un client à la file globale (liste des clients dans le supermarché)
-	 */
-	public void supprimerClient() {
-		
-		
 	}
 	
 	/**
@@ -79,7 +120,7 @@ public class Supermarche {
 			
 			// Ajouter des caisses
 			while (nouveauNbCaisses < this.nbCaisses) {
-				this.ajouterCaisse();
+				this.ajouterCaisse(false);
 			}
 			
 		} else {
@@ -98,9 +139,9 @@ public class Supermarche {
 	/**
 	 * Ajouter une caisse
 	 */
-	public void ajouterCaisse() {
+	public void ajouterCaisse(boolean caissiereExperimentee) {
 		
-		this.listeCaisses.add(new Caisse(false));
+		this.listeCaisses.add(new Caisse(caissiereExperimentee));
 	}
 	
 	/**

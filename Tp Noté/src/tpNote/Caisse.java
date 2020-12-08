@@ -14,9 +14,14 @@ public class Caisse {
 	 */
 	public ConcurrentLinkedQueue<Client> fileClients;
 	
+	/**
+	 * La durée de traitement des caddies de tous les clients affectés à cette caisse
+	 */
+	public int dureeTraitementCaisse;
+	
 	public Caisse(boolean caissiereExperimentee) {
 		
 		this.caissiereExperimentee = caissiereExperimentee;
-		this.fileClients = null;
+		this.fileClients = new ConcurrentLinkedQueue<Client>();
 	}
 }

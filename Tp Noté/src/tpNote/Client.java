@@ -8,7 +8,7 @@ public class Client {
 	public int dateArrivee;
 	
 	/**
-	 * Durée de traitement du caddie du client
+	 * Durée de traitement du caddie du client en minutes
 	 */
 	public int dureeTraitementCaddie;
 	
