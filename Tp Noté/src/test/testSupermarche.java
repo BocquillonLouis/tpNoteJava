@@ -27,13 +27,8 @@ class testSupermarche {
 		supermarche.ajouterClient(new Client(1, 2));
 	}
 
-	@Ignore
+	@Test
 	void testAjoutClient() {
-		
-		supermarche.ajouterClient(new Client(0, 2));
-		supermarche.ajouterClient(new Client(0, 2));
-		supermarche.ajouterClient(new Client(0, 2));
-		supermarche.ajouterClient(new Client(1, 2));
 		
 		if (supermarche.fileGLobale.size() != 4) {
 			fail("Les clients n'ont pas été bien ajoutés dans la file globale.");

@@ -59,17 +59,19 @@ public class Supermarche {
 			/* Si on n'a pas affecté le client dans les caisses précédentes
 			 *et qu'on arrive à la dernière, on l'affecte dans cette caise
 			 */
-			if (i == this.listeCaisses.get(i).fileClients.size()) {
+			if (i == this.listeCaisses.get(i).getFileClients().size()) {
 				
-				this.listeCaisses.get(i).fileClients.add(client);
+				this.listeCaisses.get(i).getFileClients().add(client);
 				
 				/* Ajout du temps de traitement du caddie de ce client au
 				 * temps de traitement de la caisse
 				 */
-				if (this.listeCaisses.get(i).caissiereExperimentee) {
-					this.listeCaisses.get(i).dureeTraitementCaisse += client.dureeTraitementCaddie / 2;
+				if (this.listeCaisses.get(i).isCaissiereExperimentee()) {
+					this.listeCaisses.get(i).setDureeTraitementCaisse(
+							this.listeCaisses.get(i).getDureeTraitementCaisse() + client.getDureeTraitementCaddie() / 2);
 				} else {
-					this.listeCaisses.get(i).dureeTraitementCaisse += client.dureeTraitementCaddie;
+					this.listeCaisses.get(i).setDureeTraitementCaisse(
+							this.listeCaisses.get(i).getDureeTraitementCaisse() + client.getDureeTraitementCaddie());
 				}
 				
 				clientAffecte = true;
@@ -79,18 +81,20 @@ public class Supermarche {
 				 * file de cette caisse ou si même nombre de clients dans la file
 				 * de cette caisse et dans la suivante.
 				 */
-				if (this.listeCaisses.get(i).fileClients.isEmpty()
-						|| this.listeCaisses.get(i).fileClients.size() <= this.listeCaisses.get(i+1).fileClients.size()) {
+				if (this.listeCaisses.get(i).getFileClients().isEmpty()
+						|| this.listeCaisses.get(i).getFileClients().size() <= this.listeCaisses.get(i + 1).getFileClients().size()) {
 					
-					this.listeCaisses.get(i).fileClients.add(client);
+					this.listeCaisses.get(i).getFileClients().add(client);
 					
 					/* Ajout du temps de traitement du caddie de ce client au
 					 * temps de traitement de la caisse
 					 */
-					if (this.listeCaisses.get(i).caissiereExperimentee) {
-						this.listeCaisses.get(i).dureeTraitementCaisse += client.dureeTraitementCaddie / 2;
+					if (this.listeCaisses.get(i).isCaissiereExperimentee()) {
+						this.listeCaisses.get(i).setDureeTraitementCaisse(
+								this.listeCaisses.get(i).getDureeTraitementCaisse() + client.getDureeTraitementCaddie() / 2);
 					} else {
-						this.listeCaisses.get(i).dureeTraitementCaisse += client.dureeTraitementCaddie;
+						this.listeCaisses.get(i).setDureeTraitementCaisse(
+								this.listeCaisses.get(i).getDureeTraitementCaisse() + client.getDureeTraitementCaddie());
 					}
 					
 					clientAffecte = true;
@@ -152,7 +156,7 @@ public class Supermarche {
 		int tailleListeCaisses = this.listeCaisses.size();
 		
 		// On récupère les clients qui étaient affectés à cette caisse
-		ConcurrentLinkedQueue<Client> fileClients = listeCaisses.get(tailleListeCaisses - 1).fileClients;
+		ConcurrentLinkedQueue<Client> fileClients = listeCaisses.get(tailleListeCaisses - 1).getFileClients();
 		
 		// Et on les répartit dans d'autres caisses
 		for (int i = 0; i < fileClients.size(); i++) {
